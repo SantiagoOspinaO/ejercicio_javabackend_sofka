@@ -1,4 +1,4 @@
-package org.sofka.domain;
+package org.sofka.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

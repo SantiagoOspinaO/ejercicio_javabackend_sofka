@@ -1,6 +1,6 @@
-package org.sofka.api.controler;
+package org.sofka.controler;
 
-import org.sofka.domain.Country;
+import org.sofka.model.Country;
 import org.sofka.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,34 +13,33 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/country")
 public class CountryController {
 
     @Autowired
     CountryRepository countryRepository;
 
-    @GetMapping("/api/countries")
+    @GetMapping()
     public List<Country> findAllCountries() {
         List<Country> countries = new ArrayList<>();
         countryRepository.findAll().forEach(countries::add);
         return countries;
     }
 
-    @GetMapping("/api/country/{code}")
+    @GetMapping("/{code}")
     public ResponseEntity<Country> findCountryByCode(@PathVariable(name = "code") String code) {
         Optional<Country> country = countryRepository.findCountryByCode(code);
-        if (country.isPresent()) {
-            return ResponseEntity.ok().body(country.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return country
+                .map(value -> ResponseEntity.ok().body(value))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/api/newCountry")
+    @PostMapping("/addCountry")
     public Country saveCountry(@Validated @RequestBody Country country) {
         return countryRepository.save(country);
     }
 
-    @PutMapping("api/country/{id}")
+    @PutMapping("/{id}")
     public Country updateCountry(@RequestBody Country newCountry, @PathVariable int id) {
         return countryRepository.findById(id).map(country -> {
             country.setName(newCountry.getName());
@@ -50,10 +49,13 @@ public class CountryController {
         });
     }
 
-    @DeleteMapping("/api/country/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCountry(@PathVariable int id) {
-        if (countryRepository.existsById(id)) countryRepository.deleteById(id);
-        else return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        if (countryRepository.existsById(id)) {
+            countryRepository.deleteById(id);
+        } else {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

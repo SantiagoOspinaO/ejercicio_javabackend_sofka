@@ -1,6 +1,6 @@
 package org.sofka.repository;
 
-import org.sofka.domain.Country;
+import org.sofka.model.Country;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
