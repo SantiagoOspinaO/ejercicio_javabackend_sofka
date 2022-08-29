@@ -31,7 +31,7 @@ public class Cyclist {
 
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
-    private Team cyclingTeam;
+    private Team team;
 
     @ManyToOne
     @JoinColumn(name = "id_country", nullable = false)
