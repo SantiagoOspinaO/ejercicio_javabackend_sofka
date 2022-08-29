@@ -1,4 +1,4 @@
-package org.sofka.domain;
+package org.sofka.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class Team {
     @JoinColumn(name = "id_country", nullable = false)
     private Country country;
 
-    @OneToMany(mappedBy = "cyclingTeam", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teamCode", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Cyclist> cyclists;
 }
