@@ -1,5 +1,6 @@
 package org.sofka.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "team")
+@Table(name = "teams")
 @NoArgsConstructor
 public class Team {
 
@@ -17,16 +18,17 @@ public class Team {
     @Column(name = "team_id", nullable = false)
     private int id;
 
-    @Column(name = "team_name")
+    @Column(name = "team_name", nullable = false)
     private String name;
 
-    @Column(name = "team_code", length = 3)
+    @Column(name = "team_code", length = 3, nullable = false, unique = true)
     private String code;
 
     @ManyToOne
-    @JoinColumn(name = "team_country")
+    @JoinColumn(name = "id_country", nullable = false)
     private Country country;
 
-    @OneToMany(mappedBy = "teamCode", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cyclingTeam", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Cyclist> cyclists;
 }

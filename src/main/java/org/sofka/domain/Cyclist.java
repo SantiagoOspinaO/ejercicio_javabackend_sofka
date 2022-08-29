@@ -1,13 +1,20 @@
 package org.sofka.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Data
 @Entity
-@Table(name = "cyclist")
+@Table(name = "cyclists")
 @NoArgsConstructor
 public class Cyclist {
 
@@ -16,17 +23,17 @@ public class Cyclist {
     @Column(name = "cyc_id", nullable = false)
     private String id;
 
-    @Column(name = "cyc_full_name")
+    @Column(name = "cyc_full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "cyc_competitor_number")
+    @Column(name = "cyc_competitor_number", nullable = false, unique = true)
     private int competitorNumber;
 
     @ManyToOne
-    @Column(name = "cyc_team_code", length = 3)
-    private Team teamCode;
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team cyclingTeam;
 
     @ManyToOne
-    @JoinColumn(name = "cyc_country")
+    @JoinColumn(name = "id_country", nullable = false)
     private Country country;
 }
