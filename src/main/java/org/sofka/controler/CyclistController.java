@@ -1,6 +1,6 @@
-package org.sofka.api.controler;
+package org.sofka.controler;
 
-import org.sofka.domain.Cyclist;
+import org.sofka.model.Cyclist;
 import org.sofka.repository.CyclistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/cyclist")
 public class CyclistController {
 
     @Autowired
     private CyclistRepository cyclistRepository;
 
-    @GetMapping("/api/cyclists")
+    @GetMapping()
     public ResponseEntity<List<Cyclist>> findAllCyclists(@RequestParam Map<String, String> reqParam) {
         if (!reqParam.isEmpty()) return ResponseEntity.badRequest().build();
         List<Cyclist> cyclists = new ArrayList<>();
@@ -26,24 +27,17 @@ public class CyclistController {
         return ResponseEntity.ok().body(cyclists);
     }
 
-    @PostMapping("/api/newCyclist")
+    @PostMapping("/addCyclist")
     public Cyclist saveNewCyclist(@Validated @RequestBody Cyclist newCyclist) {
         return cyclistRepository.save(newCyclist);
     }
 
-    @GetMapping("/api/cyclist/{competitorNumber}")
+    @GetMapping("/{competitorNumber}")
     public ResponseEntity<Cyclist> findCyclistByCompetitorNumber(
-            @PathVariable(name = "competitorNumber") String competitorNumber) {
+            @PathVariable(name = "competitorNumber") int competitorNumber) {
         Optional<Cyclist> cyclist = cyclistRepository.findCyclistByCompetitorNumber(competitorNumber);
-        if (cyclist.isPresent()) return ResponseEntity.ok().body(cyclist.get());
-        else return ResponseEntity.notFound().build();
-    }
-
-    @RequestMapping(value = "/api/cyclists", method = RequestMethod.GET, params = "team")
-    public List<Cyclist> findCyclistsByTeamCode(
-            @RequestParam(name = "team") String team) {
-        List<Cyclist> cyclists = new ArrayList<>();
-        cyclistRepository.findByCyclingTeamTeamCode(team).forEach(cyclists::add);
-        return cyclists;
+        return cyclist
+                .map(value -> ResponseEntity.ok().body(value))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
